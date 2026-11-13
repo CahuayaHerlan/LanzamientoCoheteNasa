@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Simulador del lanzamiento de un cohete mediante métodos numéricos.">
+    <title>Euler en el espacio | NASA 1962</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- ENCABEZADO -->
+        <header class="topbar">
+
+            <div class="brand">
+                <div class="brand-icon">N</div>
+
+                <div class="brand-text">
+                    <span>FLIGHT DYNAMICS LAB</span>
+                    <strong>NASA RESEARCH CENTER</strong>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="mission-status">
+                    <span class="status-light"></span>
+                    SISTEMA OPERATIVO
+                </div>
+
+                <button id="theme-toggle" class="theme-button" type="button" aria-label="Cambiar tema">
+                    ☼
+                </button>
+            </div>
+
+        </header>
+
+
+        <!-- PRESENTACIÓN -->
+        <main>
+
+            <section class="hero">
+
+                <div class="hero-content">
+
+                    <div class="eyebrow">
+                        <span class="eyebrow-line"></span>
+                        MISIÓN EXPERIMENTAL · 1962
+                    </div>
+
+                    <h1>
+                        EULER EN EL
+                        <span>ESPACIO</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Simulación matemática del ascenso vertical de un cohete.
+                        Analiza su velocidad, altura y comportamiento mediante
+                        diferentes métodos numéricos.
+                    </p>
+
+                    <div class="hero-tags">
+                        <span>DINÁMICA DE VUELO</span>
+                        <span>MÉTODOS NUMÉRICOS</span>
+                        <span>NASA PROJECT</span>
+                    </div>
+
+                </div>
+
+                <div class="hero-decoration">
+                    <div class="orbit orbit-1"></div>
+                    <div class="orbit orbit-2"></div>
+                    <div class="orbit orbit-3"></div>
+                    <div class="planet">✦</div>
+                    <div class="hero-number">1962</div>
+                </div>
+
+            </section>
+
+
+            <!-- MODELO MATEMÁTICO -->
+            <section class="equation-panel">
+
+                <div class="section-label">MODELO MATEMÁTICO</div>
+
+                <div class="equation-content">
+                    <div class="equation-item">
+                        <span>ECUACIÓN DE VELOCIDAD</span>
+                        <strong>v' = T/m − g − (k/m)v</strong>
+                    </div>
+
+                    <div class="equation-divider"></div>
+
+                    <div class="equation-item">
+                        <span>ECUACIÓN DE ALTURA</span>
+                        <strong>y' = v</strong>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- ESPACIO DE TRABAJO -->
+            <div class="workspace">
+
+
+                <!-- PANEL DE PARÁMETROS -->
+                <aside class="control-panel">
+
+                    <div class="panel-heading">
+                        <span class="section-label">01 / CONFIGURACIÓN</span>
+                        <h2>Parámetros del cohete</h2>
+                        <p>Modifica las condiciones de la simulación.</p>
+                    </div>
+
+                    <form id="parameters-form">
+
+                        <div class="form-section-title">
+                            <span>PARÁMETROS FÍSICOS</span>
+                            <div></div>
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="mass">Masa del cohete</label>
+
+                            <div class="input-with-unit">
+                                <input type="number" id="mass" value="1000" min="0.001" step="any">
+                                <span>kg</span>
+                            </div>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="thrust">Empuje del motor</label>
+
+                            <div class="input-with-unit">
+                                <input type="number" id="thrust" value="15000" min="0" step="any">
+                                <span>N</span>
+                            </div>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="gravity">Gravedad</label>
+
+                            <div class="input-with-unit">
+                                <input type="number" id="gravity" value="9.81" min="0" step="any">
+                                <span>m/s²</span>
+                            </div>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="resistance">Resistencia del aire (k)</label>
+
+                            <div class="input-with-unit">
+                                <input type="number" id="resistance" value="100" min="0" step="any">
+                                <span>kg/s</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-section-title">
+                            <span>CONDICIONES INICIALES</span>
+                            <div></div>
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="initial-velocity">Velocidad inicial</label>
+
+                            <div class="input-with-unit">
+                                <input type="number" id="initial-velocity" value="0" step="any">
+                                <span>m/s</span>
+                            </div>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="initial-height">Altura inicial</label>
+
+                            <div class="input-with-unit">
+                                <input type="number" id="initial-height" value="0" step="any">
+                                <span>m</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-section-title">
+                            <span>TIEMPO DE SIMULACIÓN</span>
+                            <div></div>
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="total-time">Tiempo total</label>
+
+                            <div class="input-with-unit">
+                                <input type="number" id="total-time" value="20" min="0.001" step="any">
+                                <span>segundos</span>
+                            </div>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="step-size">Paso de Euler (h)</label>
+
+                            <div class="input-with-unit">
+                                <input type="number" id="step-size" value="2" min="0.0001" step="any">
+                                <span>segundos</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="action-buttons">
+
+                            <button type="submit" class="calculate-button">
+                                <span>▶</span>
+                                CALCULAR MISIÓN
+                            </button>
+
+                            <button type="button" id="reset-button" class="reset-button">
+                                ↻ RESTABLECER
+                            </button>
+
+                        </div>
+
+                        <div id="message" class="message" role="status"></div>
+
+                    </form>
+
+
+                    <div class="precision-target">
+
+                        <span class="target-icon">◎</span>
+
+                        <div>
+                            <strong>OBJETIVO DE PRECISIÓN</strong>
+                            <p>Error de velocidad menor a 0,5 m/s y error de altura menor a 5 m.</p>
+                        </div>
+
+                    </div>
+
+                </aside>
+
+
+
+                <!-- PANEL DE RESULTADOS -->
+                <section class="results-panel">
+
+                    <div class="results-heading">
+                        <div>
+                            <span class="section-label">02 / RESULTADOS</span>
+                            <h2>Estado del lanzamiento</h2>
+                        </div>
+
+                        <span class="live-indicator">
+                            ● SIMULACIÓN ACTIVA
+                        </span>
+                    </div>
+
+
+                    <!-- TARJETAS DE RESULTADOS -->
+                    <div class="metrics-grid">
+
+                        <article class="metric-card metric-blue">
+                            <span>VELOCIDAD · EULER</span>
+                            <strong id="velocity-result">0,0000</strong>
+                            <small>m/s · Al finalizar</small>
+                        </article>
+
+                        <article class="metric-card metric-purple">
+                            <span>ALTURA · EULER</span>
+                            <strong id="height-result">0,0000</strong>
+                            <small>m · Al finalizar</small>
+                        </article>
+
+                        <article class="metric-card metric-orange">
+                            <span>ERROR DE VELOCIDAD</span>
+                            <strong id="velocity-error">0,0000</strong>
+                            <small>m/s · Respecto al valor exacto</small>
+                        </article>
+
+                        <article class="metric-card metric-green">
+                            <span>ERROR DE ALTURA</span>
+                            <strong id="height-error">0,0000</strong>
+                            <small>m · Respecto al valor exacto</small>
+                        </article>
+
+                    </div>
+
+
+                    <!-- ESTADO DE PRECISIÓN -->
+                    <div class="precision-banner" id="precision-banner">
+
+                        <div class="precision-icon">✓</div>
+
+                        <div>
+                            <strong id="precision-title">Esperando resultados</strong>
+                            <p id="precision-description">
+                                Ejecuta la simulación para comprobar la precisión.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <!-- COMPARACIÓN DE MÉTODOS -->
+                    <section class="methods-section">
+
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-label">03 / COMPARACIÓN</span>
+                                <h2>Resultados de los métodos</h2>
+                            </div>
+                        </div>
+
+                        <div class="method-cards" id="method-cards"></div>
+
+                    </section>
+
+
+                    <!-- GRÁFICAS -->
+                    <section class="charts-section">
+
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-label">04 / VISUALIZACIÓN</span>
+                                <h2>Gráficas comparativas</h2>
+                            </div>
+                        </div>
+
+
+                        <article class="chart-card">
+
+                            <div class="chart-heading">
+                                <div>
+                                    <h3>Velocidad del cohete</h3>
+                                    <p>Evolución de la velocidad respecto al tiempo.</p>
+                                </div>
+
+                                <span class="chart-unit">m/s</span>
+                            </div>
+
+                            <canvas id="velocity-chart" aria-label="Gráfica de velocidad"></canvas>
+
+                            <div class="chart-legend">
+                                <span><i class="legend-dot euler-dot"></i>Euler</span>
+                                <span><i class="legend-dot heun-dot"></i>Heun</span>
+                                <span><i class="legend-dot rk4-dot"></i>RK4</span>
+                                <span><i class="legend-dot exact-dot"></i>Analítica</span>
+                            </div>
+
+                        </article>
+
+
+                        <article class="chart-card">
+
+                            <div class="chart-heading">
+                                <div>
+                                    <h3>Altura del cohete</h3>
+                                    <p>Desplazamiento vertical durante el lanzamiento.</p>
+                                </div>
+
+                                <span class="chart-unit">metros</span>
+                            </div>
+
+                            <canvas id="height-chart" aria-label="Gráfica de altura"></canvas>
+
+                            <div class="chart-legend">
+                                <span><i class="legend-dot euler-dot"></i>Euler</span>
+                                <span><i class="legend-dot heun-dot"></i>Heun</span>
+                                <span><i class="legend-dot rk4-dot"></i>RK4</span>
+                                <span><i class="legend-dot exact-dot"></i>Analítica</span>
+                            </div>
+
+                        </article>
+
+                    </section>
+
+
+                    <!-- TABLA DE RESULTADOS -->
+                    <section class="table-section">
+
+                        <div class="table-heading">
+
+                            <div>
+                                <span class="section-label">05 / ITERACIONES</span>
+                                <h2>Tabla de resultados</h2>
+                                <p>Valores calculados en cada paso de integración.</p>
+                            </div>
+
+                            <button type="button" id="export-button" class="export-button">
+                                ↓ EXPORTAR CSV
+                            </button>
+
+                        </div>
+
+                        <div class="table-container">
+
+                            <table>
+
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2">Tiempo</th>
+                                        <th colspan="2">Euler</th>
+                                        <th colspan="2">Heun</th>
+                                        <th colspan="2">RK4</th>
+                                        <th colspan="2">Analítica</th>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Velocidad</th>
+                                        <th>Altura</th>
+                                        <th>Velocidad</th>
+                                        <th>Altura</th>
+                                        <th>Velocidad</th>
+                                        <th>Altura</th>
+                                        <th>Velocidad</th>
+                                        <th>Altura</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="results-table">
+                                    <tr>
+                                        <td colspan="9">Ejecuta la simulación para mostrar los resultados.</td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <p class="table-note">
+                            Todos los valores están expresados en metros, segundos y metros por segundo,
+                            según corresponda. Los resultados se muestran con cuatro decimales.
+                        </p>
+
+                    </section>
+
+
+                </section>
+
+            </div>
+
+        </main>
+
+
+        <!-- PIE DE PÁGINA -->
+        <footer class="footer">
+
+            <div>
+                <strong>EULER EN EL ESPACIO</strong>
+                <span>Proyecto académico · Métodos Numéricos</span>
+            </div>
+
+            <div class="footer-right">
+                NASA 1962 · SIMULACIÓN DIDÁCTICA
+            </div>
+
+        </footer>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
